@@ -1,0 +1,20 @@
+name: Migrate Qwen model release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Download model archives
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 5 --retry-delay 10 -o Qwen3-ASR-1.7B-q5_k.zip https://github.com/HaujetZhao/CapsWriter-Offline/releases/download/models/Qwen3-ASR-1.7B-q5_k.zip
+          curl -L --fail --retry 5 --retry-delay 10 -o Qwen3-ForcedAligner-0.6B.zip https://github.com/HaujetZhao/CapsWriter-Offline/releases/download/models/Qwen3-ForcedAligner-0.6B.zip
+      - name: Upload model archives
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload models Qwen3-ASR-1.7B-q5_k.zip Qwen3-ForcedAligner-0.6B.zip --repo "$GITHUB_REPOSITORY" --clobber
